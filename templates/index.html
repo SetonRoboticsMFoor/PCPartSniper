@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PC Part Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>PC Part Price Checker</h1>
+        
+        <div class="search-wrapper">
+            <input type="text" id="part-search" placeholder="Search PC3200 32GB..." autocomplete="off">
+            <div id="autocomplete-list" class="autocomplete-items"></div>
+        </div>
+
+        <section id="price-display" class="hidden">
+            <h2>Current Prices for <span id="selected-part-name"></span></h2>
+            <ul id="price-results"></ul>
+            <button id="save-part-btn">Save to My List</button>
+        </section>
+
+        <hr>
+
+        <section id="saved-parts-section">
+            <h2>Your Saved Parts</h2>
+            <div id="saved-parts-list"></div>
+        </section>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
