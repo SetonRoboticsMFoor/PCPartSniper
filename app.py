@@ -60,7 +60,7 @@ def get_options():
 @app.route('/prices')
 def get_prices():
     part_name = request.args.get('part')
-    # Mock price data - replace with your scraper later
+    # Mock price data
     prices = [
         {"store": "Amazon", "price": "$124.99"},
         {"store": "Newegg", "price": "$119.50"},
