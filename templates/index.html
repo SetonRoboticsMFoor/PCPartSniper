@@ -3,28 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PC Part Tracker</title>
+    <title>PC Part Sniper</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <div class="container">
-        <h1>PC Part Price Checker</h1>
+        <h1>PC Part Sniper</h1>
         
-        <div class="search-wrapper">
-            <input type="text" id="part-search" placeholder="Search PC3200 32GB..." autocomplete="off">
-            <div id="autocomplete-list" class="autocomplete-items"></div>
+        <div class="selection-grid">
+            <label>Category</label>
+            <select id="category-select">
+                <option value="">-- Select Category --</option>
+                <option value="CPU">CPU</option>
+                <option value="GPU">GPU</option>
+                <option value="RAM">RAM</option>
+            </select>
+
+            <label>Brand</label>
+            <select id="brand-select" disabled>
+                <option value="">-- Select Brand --</option>
+            </select>
+
+            <label>Model</label>
+            <select id="model-select" disabled>
+                <option value="">-- Select Model --</option>
+            </select>
         </div>
 
         <section id="price-display" class="hidden">
-            <h2>Current Prices for <span id="selected-part-name"></span></h2>
+            <div class="header-row">
+                <h2>Prices for <span id="selected-part-name"></span></h2>
+                <button id="save-part-btn">Save to List</button>
+            </div>
             <ul id="price-results"></ul>
-            <button id="save-part-btn">Save to My List</button>
         </section>
 
         <hr>
 
         <section id="saved-parts-section">
-            <h2>Your Saved Parts</h2>
+            <h2>Your Watchlist</h2>
             <div id="saved-parts-list"></div>
         </section>
     </div>
