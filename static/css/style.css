@@ -62,3 +62,36 @@ button {
 }
 
 button:hover { filter: brightness(1.1); }
+
+#saved-parts-list {
+    margin-top: 1rem;
+}
+
+.saved-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.delete-btn {
+    background: #ef4444; /* Red */
+    color: white;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+}
+
+.delete-btn:hover {
+    background: #dc2626;
+}
+
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
