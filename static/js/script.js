@@ -5,26 +5,33 @@ const priceDisplay = document.getElementById('price-display');
 const saveBtn = document.getElementById('save-part-btn');
 const savedList = document.getElementById('saved-parts-list');
 
-// Load watchlist from browser storage
 let watchlist = JSON.parse(localStorage.getItem('pcWatchlist')) || [];
 
-// Initial render
-renderWatchlist();
+// Initialization
+async function init() {
+    await populateDropdown(catSelect, '/get_options');
+    renderWatchlist();
+}
+init();
 
 // --- DROPDOWN LOGIC ---
 
 async function populateDropdown(element, url) {
-    const res = await fetch(url);
-    const options = await res.json();
-    
-    element.innerHTML = `<option value="">-- Select Option --</option>`;
-    options.forEach(opt => {
-        const o = document.createElement('option');
-        o.value = opt;
-        o.textContent = opt;
-        element.appendChild(o);
-    });
-    element.disabled = false;
+    try {
+        const res = await fetch(url);
+        const options = await res.json();
+        
+        element.innerHTML = `<option value="">-- Select Option --</option>`;
+        options.forEach(opt => {
+            const o = document.createElement('option');
+            o.value = opt;
+            o.textContent = opt;
+            element.appendChild(o);
+        });
+        element.disabled = false;
+    } catch (err) {
+        console.error("Error populating dropdown:", err);
+    }
 }
 
 catSelect.addEventListener('change', () => {
@@ -88,18 +95,15 @@ async function renderWatchlist() {
         return;
     }
 
-    // Temporary loading state while fetching prices
     savedList.innerHTML = '<p style="padding: 10px;">Updating live prices...</p>';
 
     let html = '';
     
-    // Fetch prices for each item in the watchlist
     for (const part of watchlist) {
         try {
             const res = await fetch(`/prices?part=${encodeURIComponent(part)}`);
             const prices = await res.json();
             
-            // Get the first price from the results
             const bestPrice = prices[0] ? prices[0].price : "N/A";
             const store = prices[0] ? prices[0].store : "Check Store";
 
@@ -122,4 +126,6 @@ async function renderWatchlist() {
 
 window.removeFromWatchlist = (partName) => {
     watchlist = watchlist.filter(item => item !== partName);
-    localStorage.setItem('pcWatchlist',
+    localStorage.setItem('pcWatchlist', JSON.stringify(watchlist));
+    renderWatchlist();
+};
