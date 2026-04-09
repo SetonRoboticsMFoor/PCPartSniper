@@ -44,19 +44,14 @@ def get_options():
     category = request.args.get('category')
     brand = request.args.get('brand')
     
-    # Tier 1: Categories
     if not category:
         return jsonify(list(PART_DATA.keys()))
     
-    # Tier 2: Brands
     if category and not brand:
-        # Find category case-insensitively
         cat_key = next((k for k in PART_DATA if k.lower() == category.lower()), None)
         if cat_key:
             return jsonify(list(PART_DATA[cat_key].keys()))
-        return jsonify([])
     
-    # Tier 3: Models
     if category and brand:
         cat_key = next((k for k in PART_DATA if k.lower() == category.lower()), None)
         if cat_key:
@@ -69,10 +64,11 @@ def get_options():
 @app.route('/prices')
 def get_prices():
     part_name = request.args.get('part')
+    # Mock price data with purchase links
     prices = [
-        {"store": "Amazon", "price": "$124.99"},
-        {"store": "Newegg", "price": "$119.50"},
-        {"store": "Best Buy", "price": "$129.99"}
+        {"store": "Amazon", "price": "$124.99", "url": "https://www.amazon.com"},
+        {"store": "Newegg", "price": "$119.50", "url": "https://www.newegg.com"},
+        {"store": "Best Buy", "price": "$129.99", "url": "https://www.bestbuy.com"}
     ]
     return jsonify(prices)
 

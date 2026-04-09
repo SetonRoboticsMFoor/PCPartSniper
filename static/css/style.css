@@ -5,6 +5,7 @@
     --text: #f8fafc;
     --border: #334155;
     --danger: #ef4444;
+    --success: #22c55e;
 }
 
 body {
@@ -65,7 +66,23 @@ select:disabled { opacity: 0.4; cursor: not-allowed; }
     border-radius: 6px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     border-left: 4px solid var(--accent);
+}
+
+.buy-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: bold;
+    border: 1px solid var(--accent);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+.buy-link:hover {
+    background: var(--accent);
+    color: #0f172a;
 }
 
 .saved-item {
@@ -83,6 +100,23 @@ select:disabled { opacity: 0.4; cursor: not-allowed; }
 .part-name { font-weight: 600; font-size: 1.1rem; }
 .part-price { font-size: 0.9rem; color: var(--accent); margin-top: 4px; }
 
+.watchlist-buy-btn {
+    display: inline-block;
+    margin-top: 8px;
+    background: var(--success);
+    color: white;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.watchlist-buy-btn:hover { background: #16a34a; }
+
+.actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+
 button {
     background: var(--accent);
     color: #0f172a;
@@ -93,6 +127,6 @@ button {
     cursor: pointer;
 }
 
-.delete-btn { background: #450a0a; color: #f87171; border: 1px solid #7f1d1d; padding: 8px 14px; }
+.delete-btn { background: #450a0a; color: #f87171; border: 1px solid #7f1d1d; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem;}
 .delete-btn:hover { background: var(--danger); color: white; }
 hr { border: 0; border-top: 1px solid var(--border); margin: 2rem 0; }
