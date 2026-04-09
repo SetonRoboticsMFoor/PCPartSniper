@@ -1,4 +1,3 @@
-// Wrap everything in an event listener to ensure the DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     const catSelect = document.getElementById('category-select');
     const brandSelect = document.getElementById('brand-select');
@@ -9,17 +8,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let watchlist = JSON.parse(localStorage.getItem('pcWatchlist')) || [];
 
-    // --- INITIALIZATION ---
     async function init() {
+        console.log("Initializing: Fetching categories...");
         await populateDropdown(catSelect, '/get_options', "-- Select Category --");
         renderWatchlist();
     }
 
-    // --- DROPDOWN LOGIC ---
     async function populateDropdown(element, url, defaultText) {
         try {
             const res = await fetch(url);
             const options = await res.json();
+            console.log(`Data received for ${url}:`, options);
             
             element.innerHTML = `<option value="">${defaultText}</option>`;
             options.forEach(opt => {
@@ -30,13 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             element.disabled = false;
         } catch (err) {
-            console.error("Error populating dropdown:", err);
+            console.error("Fetch error:", err);
         }
     }
 
     catSelect.addEventListener('change', () => {
-        brandSelect.innerHTML = `<option value="">-- Select Brand --</option>`;
-        modelSelect.innerHTML = `<option value="">-- Select Model --</option>`;
+        console.log("Category selected:", catSelect.value);
+        brandSelect.innerHTML = `<option value="">-- Loading Brands... --</option>`;
+        modelSelect.innerHTML = `<option value="">-- Select Brand First --</option>`;
         brandSelect.disabled = true;
         modelSelect.disabled = true;
         priceDisplay.classList.add('hidden');
@@ -47,7 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     brandSelect.addEventListener('change', () => {
-        modelSelect.innerHTML = `<option value="">-- Select Model --</option>`;
+        console.log("Brand selected:", brandSelect.value);
+        modelSelect.innerHTML = `<option value="">-- Loading Models... --</option>`;
         modelSelect.disabled = true;
         priceDisplay.classList.add('hidden');
 
@@ -75,16 +76,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- WATCHLIST LOGIC ---
     saveBtn.addEventListener('click', () => {
         const partName = document.getElementById('selected-part-name').innerText;
-        
         if (!watchlist.includes(partName)) {
             watchlist.push(partName);
             localStorage.setItem('pcWatchlist', JSON.stringify(watchlist));
             renderWatchlist();
-        } else {
-            alert("This part is already in your watchlist!");
         }
     });
 
@@ -94,33 +91,24 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        savedList.innerHTML = '<p style="padding: 10px;">Updating live prices...</p>';
-
+        savedList.innerHTML = '<p style="padding: 10px;">Updating prices...</p>';
         let html = '';
         for (const part of watchlist) {
-            try {
-                const res = await fetch(`/prices?part=${encodeURIComponent(part)}`);
-                const prices = await res.json();
-                
-                const bestPrice = prices[0] ? prices[0].price : "N/A";
-                const store = prices[0] ? prices[0].store : "Check Store";
-
-                html += `
-                    <div class="saved-item">
-                        <div class="item-info">
-                            <span class="part-name">${part}</span>
-                            <span class="part-price">${store}: <strong>${bestPrice}</strong></span>
-                        </div>
-                        <button class="delete-btn" data-part="${part}">Remove</button>
+            const res = await fetch(`/prices?part=${encodeURIComponent(part)}`);
+            const prices = await res.json();
+            const bestPrice = prices[0] ? prices[0].price : "N/A";
+            html += `
+                <div class="saved-item">
+                    <div class="item-info">
+                        <span class="part-name">${part}</span>
+                        <span class="part-price">Best Price: <strong>${bestPrice}</strong></span>
                     </div>
-                `;
-            } catch (err) {
-                console.error("Error updating price for:", part);
-            }
+                    <button class="delete-btn" data-part="${part}">Remove</button>
+                </div>
+            `;
         }
         savedList.innerHTML = html;
 
-        // Re-attach delete listeners
         document.querySelectorAll('.delete-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const partName = e.target.getAttribute('data-part');
@@ -131,6 +119,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Start the app
     init();
 });

@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
 
-# Expanded hierarchical data structure
+# Hierarchical data
 PART_DATA = {
     "CPU": {
         "Intel": ["Core i9-14900K", "Core i7-13700K", "Core i5-13600K", "Core i3-12100"],
@@ -44,23 +44,31 @@ def get_options():
     category = request.args.get('category')
     brand = request.args.get('brand')
     
+    # Tier 1: Categories
     if not category:
         return jsonify(list(PART_DATA.keys()))
     
+    # Tier 2: Brands
     if category and not brand:
-        brands = list(PART_DATA.get(category, {}).keys())
-        return jsonify(brands)
+        # Find category case-insensitively
+        cat_key = next((k for k in PART_DATA if k.lower() == category.lower()), None)
+        if cat_key:
+            return jsonify(list(PART_DATA[cat_key].keys()))
+        return jsonify([])
     
+    # Tier 3: Models
     if category and brand:
-        models = PART_DATA.get(category, {}).get(brand, [])
-        return jsonify(models)
+        cat_key = next((k for k in PART_DATA if k.lower() == category.lower()), None)
+        if cat_key:
+            brand_key = next((b for b in PART_DATA[cat_key] if b.lower() == brand.lower()), None)
+            if brand_key:
+                return jsonify(PART_DATA[cat_key][brand_key])
     
     return jsonify([])
 
 @app.route('/prices')
 def get_prices():
     part_name = request.args.get('part')
-    # Mock price data
     prices = [
         {"store": "Amazon", "price": "$124.99"},
         {"store": "Newegg", "price": "$119.50"},
